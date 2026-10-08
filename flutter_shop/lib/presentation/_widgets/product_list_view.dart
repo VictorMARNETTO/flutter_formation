@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/models/cart.dart';
 import 'package:flutter_shop/product.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class ProductListView extends StatelessWidget {
   final List<Product> products;
-  const new({super.key, required this.products});
+  final bool isCart;
+  const new({super.key, required this.products, this.isCart = false});
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +18,7 @@ class ProductListView extends StatelessWidget {
         return Card(
           child: ListTile(
             onTap: () {
-              context.push(
-                '/product/${products[index].id}',
-                extra: products[index],
-              );
+              context.go('/product/${products[index].id}');
             },
             leading: Image.network(
               products[index].image,
@@ -30,7 +30,22 @@ class ProductListView extends StatelessWidget {
               products[index].getPriceInEuro(),
               style: Theme.of(context).textTheme.headlineSmall,
             ),
-            trailing: TextButton(onPressed: () {}, child: Text("ajouter")),
+            trailing: TextButton(
+              onPressed: () {
+                if (isCart) {
+                  Provider.of<Cart>(
+                    context,
+                    listen: false,
+                  ).removeProduct(products[index]);
+                } else {
+                  Provider.of<Cart>(
+                    context,
+                    listen: false,
+                  ).addProduct(products[index]);
+                }
+              },
+              child: isCart ? Icon(Icons.delete) : Icon(Icons.add),
+            ),
           ),
         );
       },
