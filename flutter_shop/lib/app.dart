@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop/models/cart.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_shop/router.dart';
-import 'package:provider/provider.dart';
 
-class FlutterShopApp extends StatelessWidget {
+class FlutterShopApp extends ConsumerWidget {
   const FlutterShopApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (BuildContext context) => Cart(),
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Activation riverpod pour l'application
+    return ProviderScope(
       child: MaterialApp.router(
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),

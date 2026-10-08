@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_shop/models/cart.dart';
 import 'package:flutter_shop/product.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-class ProductListView extends StatelessWidget {
+class ProductListView extends ConsumerWidget {
   final List<Product> products;
   final bool isCart;
   const new({super.key, required this.products, this.isCart = false});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ListView.separated(
       itemCount: products.length,
       separatorBuilder: (_, _) => Divider(),
@@ -33,15 +33,11 @@ class ProductListView extends StatelessWidget {
             trailing: TextButton(
               onPressed: () {
                 if (isCart) {
-                  Provider.of<Cart>(
-                    context,
-                    listen: false,
-                  ).removeProduct(products[index]);
+                  ref
+                      .read(cartProvider.notifier)
+                      .removeProduct(products[index]);
                 } else {
-                  Provider.of<Cart>(
-                    context,
-                    listen: false,
-                  ).addProduct(products[index]);
+                  ref.read(cartProvider.notifier).addProduct(products[index]);
                 }
               },
               child: isCart ? Icon(Icons.delete) : Icon(Icons.add),

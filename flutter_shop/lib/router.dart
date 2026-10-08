@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_shop/presentation/pages/cart_page.dart';
 import 'package:flutter_shop/presentation/pages/detail_product_page.dart';
 import 'package:flutter_shop/presentation/pages/list_product_page.dart';
-import 'package:flutter_shop/product.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(

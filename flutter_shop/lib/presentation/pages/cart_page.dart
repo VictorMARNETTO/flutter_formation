@@ -1,44 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_shop/models/cart.dart';
 import 'package:flutter_shop/presentation/_widgets/product_list_view.dart';
-import 'package:provider/provider.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends ConsumerWidget {
   const CartPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cart = ref.watch(cartProvider);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Mon panier"),
+        title: const Text('Mon panier'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Consumer<Cart>(
-        builder: (context, cart, child) {
-          if (cart.products.isEmpty) {
-            return Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RowTotal(total: 0),
-                ),
-                EmptyCart(),
-              ],
-            );
-          } else {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RowTotal(total: cart.totalPrice),
-                ),
-                Expanded(
-                  child: ProductListView(products: cart.products, isCart: true),
-                ),
-              ],
-            );
-          }
-        },
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: RowTotal(
+              total: cart.isNotEmpty
+                  ? ref.read(cartProvider.notifier).totalPrice
+                  : 0,
+            ),
+          ),
+          Expanded(
+            child: cart.isEmpty
+                ? const EmptyCart()
+                : ProductListView(products: cart, isCart: true),
+          ),
+        ],
       ),
     );
   }
@@ -46,17 +38,18 @@ class CartPage extends StatelessWidget {
 
 class RowTotal extends StatelessWidget {
   final num total;
-  const new({super.key, required this.total});
+
+  const RowTotal({super.key, required this.total});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text("Votre panier total est de"),
-        Spacer(),
+        const Text('Votre panier total est de'),
+        const Spacer(),
         Text(
-          "${total.toStringAsFixed(2)}€",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          '${total.toStringAsFixed(2)} €',
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -64,15 +57,15 @@ class RowTotal extends StatelessWidget {
 }
 
 class EmptyCart extends StatelessWidget {
-  const new({super.key});
+  const EmptyCart({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Votre panier est actuellement vide"),
+          Text('Votre panier est actuellement vide'),
           Icon(Icons.photo),
         ],
       ),

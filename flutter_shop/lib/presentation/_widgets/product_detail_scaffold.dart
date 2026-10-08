@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_shop/models/cart.dart';
 import 'package:flutter_shop/product.dart';
 import 'package:provider/provider.dart';
 
-class ProductDetailScaffold extends StatelessWidget {
+class ProductDetailScaffold extends ConsumerWidget {
   final Product product;
   const ProductDetailScaffold({super.key, required this.product});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -46,7 +47,7 @@ class ProductDetailScaffold extends StatelessWidget {
                 child: FilledButton(
                   onPressed: () {
                     // Ajouter le produit au panier
-                    context.read<Cart>().addProduct(product);
+                    ref.read(cartProvider.notifier).addProduct(product);
                   },
                   child: Text("Ajouter au panier"),
                 ),
